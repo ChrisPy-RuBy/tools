@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+aspellfile=$HOME/.aspell.en.pws 
+nvimtempfile=$HOME/.config/nvim/spell/en.utf-8.added
+aspelltempfile=$HOME/.aspell.x.txt
+nvimfile=$HOME/.config/nvim/spell/en.utf-8.add
+
+tidy () {
+        if [[ -f $nvimtempfile ]]; then
+                rm $nvimtempfile
+        fi
+
+        if [[ -f $aspelltempfile ]]; then
+                rm $aspelltempfile
+        fi
+}
+tidy
+head -n +1 "$aspellfile" > "$aspelltempfile"
+tail +1 "$aspellfile" >> "$nvimfile"
+sort "$nvimfile" | uniq > "$nvimtempfile" 
+grep -vE '[0-9]+' "$nvimtempfile" >> "$aspelltempfile" 
+rm "$aspellfile"
+mv "$aspelltempfile" "$aspellfile"
+tidy

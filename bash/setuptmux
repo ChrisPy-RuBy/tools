@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+## Practice script setting up tmux sessions that I use a lot. 
+## Also practice for using the getopts tool in bash
+
+sessions=("jq" "labbook" "frontend" "life")
+
+txkill () {
+        tmux kill-server
+}
+
+jqtmux () {
+        #echo 'setup jq'
+        tmux new-session -d -s jq "cd ~/dev/tvsquared-backend; python3 -m tvsquared.tools.jobqueue show" \; \
+                split-window -v -p 50 \; \
+                split-window -v -p 90 \; \
+                send-keys 'cd ~/dev/tvsquared-backend; python3 -m tvsquared.tools.jobqueue stop; python3 -m tvsquared.tools.jobqueue cleanlocks' C-m \; \
+                send-keys 'python3 -m tvsquared.tools.jobqueue start' C-m \; \
+                send-keys 'python3 -m tvsquared.jobqueue.execute -vv dev' C-m \; 
+                # send-keys "cd ~/dev/tvsquared-backend;" C-m \; 
+}
+
+frontendtmux () {
+        echo 'View Frontend on: http://0.0.0.0:8000/'
+        tmux new-session -d -s frontend "cd ~/dev/tvsquared-frontend; ./bin/runserver" > /dev/null 2>&1
+}
+
+labbooktmux () {
+        echo "View labbook on: http://127.0.0.1:9999/"
+        tmux new-session -d -s labbook 'cd ~/labbook; mkdocs serve' > /dev/null 2>&1
+}
+
+lifetmux () {
+        echo "View life on: http://127.0.0.1:8001/"
+        tmux new-session -d -s life 'cd ~/life; mkdocs serve' > /dev/null 2>&1
+}
+
+main () {
+     #   tmux new-session -d -s mongo 'mongod'
+        #echo "setup labbook"
+        tmux new-session -d -s labbook 'cd ~/labbook; mkdocs serve'
+        #echo 'setup frontend'
+        tmux new-session -d -s frontend "cd ~/dev/tvsquared-frontend; ./bin/runserver"
+        #echo 'setup jq'
+        jqtmux
+}
+
+while getopts ":hkas:" opt; do
+  case ${opt} in
+    h )
+      echo "Usage:"
+      echo "    tmux_setup -h                   Display this help message."
+      echo "    tmux_setup -k                   Drop tmux server."
+      echo "    tmux_setup -a                   Setup all tmux sessions."
+      echo "    tmux_setup -s                   Setup specific session. Options are ${sessions[*]}" 
+      exit 0
+      ;;
+    k ) 
+      echo "Dropping tmux server"             
+      txkill 
+      ;;
+    a )
+      echo "Setting up tmux sessions"
+      main
+      ;;
+    s )
+      #echo "Setting up specific tmux session"
+      session=$OPTARG
+      case $session in 
+        jq )
+                jqtmux
+                ;;
+        frontend )
+                frontendtmux
+                ;;
+        labbook )
+                labbooktmux
+                ;;
+        life )
+                lifetmux
+                ;;
+        \? )
+                echo "dunno that one"
+                exit 1
+      esac
+      ;;  
+    \? )
+      echo "Invalid Option: -$OPTARG" 1>&2
+      exit 1
+      ;;
+  esac
+done
+shift $((OPTIND -1))
+
+
+if [ $OPTIND -eq 1 ]; then echo "No options were passed. See setuptmux -h for some"; fi
+shift $((OPTIND-1))
