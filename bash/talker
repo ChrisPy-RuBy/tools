@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+read -rp "IP address: " IP
+read -rp "Port: " PORT
+nc "$IP" "$PORT"
+

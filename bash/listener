@@ -1,0 +1,6 @@
+#!/bin/bash
+
+address=$(getip)
+port=$(( $RANDOM % 35000 + 10000))
+echo "listening on $address $port"
+nc -d "$port" -l 

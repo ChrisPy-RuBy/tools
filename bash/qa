@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+# tool for general code qa. 
+# spellcheck, lint, autoformat
+# check the #! of the file for extension
+check_shebang () {
+        shebang=$(grep -E '#!' "$1")
+        if [[ $shebang =~ python ]]; then
+                echo "python"
+        elif [[ $shebang =~ bash ]]; then 
+                echo "bash"
+        fi
+}
+
+main () {
+        if [[ -f $1 ]]; then
+                echo "checking $1"
+                aspell -c $1
+                shebangtype=$(check_shebang $1)
+                if [[ $1 =~ ".py" ]] || [[ $shebangtype == 'python' ]]; then
+                        echo "checking python file"
+                        FILETYPE=".py"
+                        black --line-length 120 $1
+                        echo "blacking"
+                        flake8 --max-line-length=120 --show-source  $1
+                elif [[ $1 =~ ".sh" ]] || [[ $shebangtype == 'bash' ]]; then
+                        echo "checking bash file"
+                        FILETYPE=".sh"
+                elif [[ $! =~ ".ino" ]]; then
+                        echo "checking c-type file"
+                        FILETYPE=".c"
+                else
+                        echo "unknown extension"
+                fi
+        else
+                echo "file doesn't exist"; exit 1
+        fi
+}
+
+main "$@"
+
