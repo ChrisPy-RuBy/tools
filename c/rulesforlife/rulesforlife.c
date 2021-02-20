@@ -13,6 +13,12 @@ date "+%Y %m" | xargs ./rulesforlife
 
 int main(int argc, char *argv[]) {
 
+	if(argc != 3) {
+		return 0;
+	};
+
+
+
 	int year = atoi(argv[1]);
 	int month = atoi(argv[2]);
 	int seed = year + month;
