@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 
 void readFile(FILE * fPtr);
 
@@ -17,11 +18,13 @@ int main (int argc, char *argv[])
 	char tag2[] = "**to_learn";
 	char tag3[] = "**to_add";
 	char tag4[] = "**to_do";
+	char tag5[] = "**to_note";
 
-	char *ptr1 =  strstr(argv[1], tag1);
+	char *ptr1 = strstr(argv[1], tag1);
 	char *ptr2 = strstr(argv[1], tag2);
 	char *ptr3 = strstr(argv[1], tag3);
 	char *ptr4 = strstr(argv[1], tag4);
+	char *ptr5 = strstr(argv[1], tag5);
 
 
 	if(ptr1 == NULL && ptr2 == NULL) {
@@ -32,6 +35,17 @@ int main (int argc, char *argv[])
 		return 0;
 	}
 
+	// generate date to prepend to note
+	char s[1000];
+
+	time_t t = time(NULL);
+	struct tm * p = localtime(&t);
+
+	strftime(s, 1000, "%F %r", p);
+	printf("%s\n", s);
+	char *withspace = strcat(s, " ");
+	char *payload = strcat(withspace, argv[1]);
+	char *withnewline = strcat(payload, "\n");
 
 	FILE *fPtr;
 	char *homedir = getenv("HOME");
@@ -46,9 +60,7 @@ int main (int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
-
-	fputs(argv[1], fPtr);
-
+	fputs(payload, fPtr);
 
 	return 0;
 }
