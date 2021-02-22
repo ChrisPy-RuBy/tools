@@ -27,7 +27,11 @@ int main (int argc, char *argv[])
 	char *ptr5 = strstr(argv[1], tag5);
 
 
-	if(ptr1 == NULL && ptr2 == NULL) {
+	if(ptr1 == NULL && 
+	   ptr2 == NULL &&
+	   ptr3 == NULL &&
+	   ptr4 == NULL &&
+	   ptr5 == NULL) {
 		printf("You forgot to add a valid tag.\n");
 		printf("Valid tags are ...\n**to_learn -> things to learn\n");
 		printf("**to_add -> things to add\n**to_do -> things to do\n");
