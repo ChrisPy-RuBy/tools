@@ -13,7 +13,6 @@ int main (int argc, char *argv[])
 		return 0;
 	}
 	
-	
 	char tag1[] = "**to_build";
 	char tag2[] = "**to_learn";
 	char tag3[] = "**to_add";
@@ -53,8 +52,12 @@ int main (int argc, char *argv[])
 
 	FILE *fPtr;
 	char *homedir = getenv("HOME");
+	char homedirforlife[100];
+	char homedirforscripts[100];
+    strcpy(homedirforlife, homedir);
+    strcpy(homedirforscripts, homedir);
 	char *filePath = "/life/docs/braindump.md";
-	char *fullPath = strcat(homedir, filePath);
+	char *fullPath = strcat(homedirforlife, filePath);
 
 	fPtr = fopen(fullPath, "a");
 
@@ -65,6 +68,12 @@ int main (int argc, char *argv[])
 	}
 
 	fputs(payload, fPtr);
+	
+	char *command = strcat(homedirforscripts, "/tools/c/bdump/updatethings ");
+	char *part1command = strcat(command, "\"");
+	char *part2command = strcat(part1command, argv[1]);
+	char *fullcommand = strcat(part2command, "\"");
 
+	system(fullcommand);
 	return 0;
 }

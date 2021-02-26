@@ -1,4 +1,2 @@
-# The Idea:
-
-A collection of tools that I use, that I rolled myself.
-Typcially very simple.
+Simple wrapper around the python smtp lib that allow you 
+to send emails from the commandline.
