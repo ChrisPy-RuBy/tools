@@ -1,0 +1,40 @@
+#! /usr/bin/env python3
+
+import smtplib
+import ssl
+import argparse
+import socket
+import os
+
+
+def send_email(reciever_email, subject, message=""):
+
+    
+
+    port = 465  # For SSL
+    password = os.environ['TA_EMAIL_ACCESS_KEY']
+    smtp_server = "smtp.gmail.com"
+    sender_email = socket.gethostname()
+    reciever_email = input_args.reciever_email
+    message_header = f"Subject: {subject}\n\n"
+    message = f"{message}" if input_args.message else ""
+    message = "".join([message_header, message])
+
+    # Create a secure SSL context
+    context = ssl.create_default_context()
+
+    print(f"reciever_email: {reciever_email}, subject: {subject}, password: {password}")
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", port, context=context) as server:
+        server.login("christopherhwoodallta@gmail.com", password)
+        server.sendmail(sender_email, reciever_email, message)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('reciever_email')
+    parser.add_argument('subject')
+    parser.add_argument('--message')
+    input_args = parser.parse_args()
+    send_email(input_args.reciever_email,
+               input_args.subject, input_args.message)
