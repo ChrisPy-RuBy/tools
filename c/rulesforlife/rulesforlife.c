@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
 	};
 
 	srand(seed);
-	int a = rand() % 41;
+	int a = rand() % 40;
 	printf("%s\n", strings[a]);
 	return 0;	
 }
