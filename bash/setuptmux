@@ -4,7 +4,7 @@ set -euo pipefail
 ## Practice script setting up tmux sessions that I use a lot. 
 ## Also practice for using the getopts tool in bash
 
-sessions=("jq" "labbook" "frontend" "life")
+sessions=("jq" "labbook" "frontend" "life" "labserver" "dblogs")
 
 txkill () {
         tmux kill-server
@@ -23,7 +23,7 @@ jqtmux () {
 
 frontendtmux () {
         echo 'View Frontend on: http://0.0.0.0:8000/'
-        tmux new-session -d -s frontend "cd ~/dev/tvsquared-frontend; ./bin/runserver" > /dev/null 2>&1
+        tmux new-session -d -s frontend "cd $WORK/tvsquared-frontend; ./bin/runserver" > /dev/null 2>&1
 }
 
 labbooktmux () {
@@ -34,6 +34,10 @@ labbooktmux () {
 lifetmux () {
         echo "View life on: http://127.0.0.1:8001/"
         tmux new-session -d -s life 'cd ~/life; mkdocs serve' > /dev/null 2>&1
+}
+
+labtmux () {
+	tmux new-session -d -s labserver 'cd $WORK/datascience; poetry run jupyter lab' >/dev/null 2>&1
 }
 
 main () {
@@ -80,7 +84,10 @@ while getopts ":hkas:" opt; do
         life )
                 lifetmux
                 ;;
-        \? )
+		labserver )
+				labtmux
+				;;
+        * )
                 echo "dunno that one"
                 exit 1
       esac

@@ -15,26 +15,32 @@ int main (int argc, char *argv[])
 	
 	char tag1[] = "**to_build";
 	char tag2[] = "**to_learn";
-	char tag3[] = "**to_add";
+	char tag3[] = "**to_anki";
 	char tag4[] = "**to_do";
 	char tag5[] = "**to_note";
+	char tag6[] = "**to_ask";
 
 	char *ptr1 = strstr(argv[1], tag1);
 	char *ptr2 = strstr(argv[1], tag2);
 	char *ptr3 = strstr(argv[1], tag3);
 	char *ptr4 = strstr(argv[1], tag4);
 	char *ptr5 = strstr(argv[1], tag5);
+	char *ptr6 = strstr(argv[1], tag6);
 
 
 	if(ptr1 == NULL && 
 	   ptr2 == NULL &&
 	   ptr3 == NULL &&
 	   ptr4 == NULL &&
-	   ptr5 == NULL) {
+	   ptr5 == NULL &&
+	   ptr6 == NULL) {
 		printf("You forgot to add a valid tag.\n");
-		printf("Valid tags are ...\n**to_learn -> things to learn\n");
-		printf("**to_add -> things to add\n**to_do -> things to do\n");
-		printf("**to_make -> project ideas");
+		printf("Valid tags are ...\n");
+		printf("**to_learn -> things to learn\n");
+		printf("**to_anki -> things to add\n");
+		printf("**to_do -> things to do\n");
+		printf("**to_build -> project ideas\n");
+		printf("**to_ask -> questions to ask people\n");
 		return 0;
 	}
 
@@ -48,7 +54,6 @@ int main (int argc, char *argv[])
 	printf("%s\n", s);
 	char *withspace = strcat(s, " ");
 	char *payload = strcat(withspace, argv[1]);
-	char *withnewline = strcat(payload, "\n");
 
 	FILE *fPtr;
 	char *homedir = getenv("HOME");
