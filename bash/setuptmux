@@ -4,7 +4,7 @@ set -euo pipefail
 ## Practice script setting up tmux sessions that I use a lot. 
 ## Also practice for using the getopts tool in bash
 
-sessions=("jq" "labbook" "frontend" "life" "labserver" "dblogs")
+sessions=("jq" "labbookserver" "labbook" "frontend" "life" "labserver" "dblogs" "diary")
 
 txkill () {
         tmux kill-server
@@ -26,18 +26,26 @@ frontendtmux () {
         tmux new-session -d -s frontend "cd $WORK/tvsquared-frontend; ./bin/runserver" > /dev/null 2>&1
 }
 
-labbooktmux () {
+labbookserver () {
         echo "View labbook on: http://127.0.0.1:9999/"
-        tmux new-session -d -s labbook 'cd ~/labbook; mkdocs serve' > /dev/null 2>&1
+        tmux new-session -d -s servelabbook 'cd ~/labbook; mkdocs serve' > /dev/null 2>&1
 }
 
 lifetmux () {
         echo "View life on: http://127.0.0.1:8001/"
-        tmux new-session -d -s life 'cd ~/life; mkdocs serve' > /dev/null 2>&1
+        tmux new-session -d -s servelife 'cd ~/life; mkdocs serve' > /dev/null 2>&1
 }
 
 labtmux () {
-	tmux new-session -d -s labserver 'cd $WORK/datascience; poetry run jupyter lab' >/dev/null 2>&1
+	tmux new-session -d -s servejupyerlab 'cd $WORK/datascience; poetry run jupyter lab' >/dev/null 2>&1
+}
+
+labbook () {
+  tmux new-session -d -s labbook "cd $HOME/labbook; nvim docs/" \;
+}
+
+diary () {
+  tmux new-session -d -s diary "cd $HOME/life/docs/Diary; nvim workdiary.md" \;
 }
 
 main () {
@@ -78,8 +86,8 @@ while getopts ":hkas:" opt; do
         frontend )
                 frontendtmux
                 ;;
-        labbook )
-                labbooktmux
+        labbookserver )
+                labbookserver
                 ;;
         life )
                 lifetmux
@@ -87,6 +95,12 @@ while getopts ":hkas:" opt; do
 		labserver )
 				labtmux
 				;;
+        labbook )
+                labbook
+                ;;
+        diary )
+                diary
+                ;;
         * )
                 echo "dunno that one"
                 exit 1
